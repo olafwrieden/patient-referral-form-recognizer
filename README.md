@@ -1,4 +1,4 @@
-# Patient Referral Form Recognizer
+# Form Recognizer: Patient Referral
 
 > The purpose of this repository is to demonstrate the use of Azure Form Recognizer in evaluating a patient referral form sent between doctors and hospitals.
 
