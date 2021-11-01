@@ -1,0 +1,12 @@
+{
+  "bindings": [
+    {
+      "name": "myBlob",
+      "type": "blobTrigger",
+      "direction": "in",
+      "path": "incoming/{name}",
+      "connection": "nswhealth_STORAGE"
+    }
+  ],
+  "scriptFile": "../dist/patient-referral-form-recognizer/index.js"
+}
