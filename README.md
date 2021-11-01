@@ -27,3 +27,7 @@
 This is the processed output in our storage medium of choice, Azure Table Storage.
 
 ![Azure Table Storage Screenshot](./media/table-storage-output.png)
+
+Processed file with confidence metadata added:
+
+![Metadata added to Blob](./media/processed-file-metadata.png)
