@@ -22,7 +22,7 @@
 5. The file, regardless of the outcome is tagged (metadata) with the overall confidence score when it is moved between containers.
 6. Once processing has completed and the file has been moved, it will disappear from the `incoming` (source) container.
 
-## Output: Table Storage (Processed)
+## Output: Table & Blob Storage (Processed)
 
 This is the processed output in our storage medium of choice, Azure Table Storage.
 
