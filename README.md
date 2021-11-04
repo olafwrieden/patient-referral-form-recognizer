@@ -25,7 +25,7 @@ Our goal is now to train an Azure Form Recognizer model to label, train, and tes
 5. The file, regardless of the outcome is tagged (metadata) with the overall confidence score when it is moved between containers.
 6. Once processing has completed and the file has been moved, it will disappear from the `incoming` (source) container.
 
-## Creating the Resources
+## Deploying the Resources
 
 - **Azure Function:** An Azure Function is defined to perform the form recognition and perform conditional actions such as moving the form to a new storage container as per our arbitrary requirements. This function is triggered by a `BlobTrigger` - when a blob in a storage container changes, such as when it is added.
 - **Storage Account:** The storage account is the underlying storage medium in our demo, it contains 3 containers and a table store called 'referrals':
