@@ -10,16 +10,9 @@ Each health provider has their own style of referral document and while intent a
 
 Our goal is now to train an Azure Form Recognizer model to label, train, and test the optical character recognition to detect the values supplied in these referral forms, minimising the cognitive effort by frontline workers.
 
+## High-Level Process
+
 ![Overview](./media/overview.png)
-
-## High-level Overview
-
-- **Azure Function:** An Azure Function is defined to perform the form recognition and perform conditional actions such as moving the form to a new storage container as per our arbitrary requirements. This function is triggered by a `BlobTrigger` - when a blob in a storage container changes, such as when it is added.
-- **Storage Account:** The storage account is the underlying storage medium in our demo, it contains 3 containers and a table store called 'referrals':
-  - Incoming: Where new patient referral forms get uploaded and automatically picked up for processing by our Azure Function.
-  - Completed: Where processed patient referral forms get loaded into after they have been processed by the Azure Function and deemed "accurate enough" as per our arbitrary definition of overall confidence percentage.
-  - Review: Where forms are moved to if the Form Recognizer determines that the overall confidence level of the text extraction is too low as per our arbitrary definition.
-- **Form Recognizer:** The processing service in Azure, part of Azure Cognitive Services or standalone service that can be created as a new resource via the azure portal.
 
 ## What happens end-to-end?
 
@@ -31,6 +24,16 @@ Our goal is now to train an Azure Form Recognizer model to label, train, and tes
    - If it it greater than or equal to our pre-defined threshold, it's custom fields are extracted and appended to an Azure Table Storage (this could be any database); and the document itself is moved to the `completed` container.
 5. The file, regardless of the outcome is tagged (metadata) with the overall confidence score when it is moved between containers.
 6. Once processing has completed and the file has been moved, it will disappear from the `incoming` (source) container.
+
+## Creating the Resources
+
+- **Azure Function:** An Azure Function is defined to perform the form recognition and perform conditional actions such as moving the form to a new storage container as per our arbitrary requirements. This function is triggered by a `BlobTrigger` - when a blob in a storage container changes, such as when it is added.
+- **Storage Account:** The storage account is the underlying storage medium in our demo, it contains 3 containers and a table store called 'referrals':
+  - Incoming: Where new patient referral forms get uploaded and automatically picked up for processing by our Azure Function.
+  - Completed: Where processed patient referral forms get loaded into after they have been processed by the Azure Function and deemed "accurate enough" as per our arbitrary definition of overall confidence percentage.
+  - Review: Where forms are moved to if the Form Recognizer determines that the overall confidence level of the text extraction is too low as per our arbitrary definition.
+  - Referrals: This should not be a storage container but a table storage collection. This is the persistent store to which we will save our form data.
+- **Form Recognizer:** The processing service in Azure, part of Azure Cognitive Services or standalone service that can be created as a new resource via the azure portal.
 
 ## Output: Table & Blob Storage (Processed)
 
