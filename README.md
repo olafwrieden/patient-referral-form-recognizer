@@ -2,6 +2,8 @@
 
 > The purpose of this repository is to demonstrate the use of Azure Form Recognizer in evaluating a patient referral form sent between doctors and hospitals.
 
+![Overview](./media/overview.png)
+
 ## High-level Overview
 
 - **Azure Function:** An Azure Function is defined to perform the form recognition and perform conditional actions such as moving the form to a new storage container as per our arbitrary requirements. This function is triggered by a `BlobTrigger` - when a blob in a storage container changes, such as when it is added.
@@ -10,8 +12,6 @@
   - Processed: Where processed patient referral forms get loaded into after they have been processed by the Azure Function and deemed "accurate enough" as per our arbitrary definition of overall confidence percentage.
   - Manual: Where forms are moved to if the Form Recognizer determines that the overall confidence level of the text extraction is too low as per our arbitrary definition.
 - **Form Recognizer:** The processing service in Azure, part of Azure Cognitive Services or standalone service that can be created as a new resource via the azure portal.
-
-![Overview](./media/high-level-overview.png)
 
 ## What happens end-to-end?
 
