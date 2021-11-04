@@ -35,6 +35,14 @@ Our goal is now to train an Azure Form Recognizer model to label, train, and tes
   - Referrals: This should not be a storage container but a table storage collection. This is the persistent store to which we will save our form data.
 - **Form Recognizer:** The processing service in Azure, part of Azure Cognitive Services or standalone service that can be created as a new resource via the azure portal.
 
+## Training Form Recognizer (Custom Form)
+
+In this interactive process, you tell Form Recognizer what text to extract based on your training dataset of at least 5 images. You may use the Form Recognizer Studio experience to upload a set of coversheet documents with different values for the fields (e.g. names, checkmark selections, dates).
+
+Give a description key to all data types you label (eg. patient_first_name or is_gender_female). Once all responses have been tagged appropriately, reuse the same labels on the remaining 4+ samples of training data.
+
+You are now ready to train your custom form model. Simply click the "Train" button and give a descriptive name to your model (we will reference this name later so make note of it). On completion, you may test the accuracy by navigating to the "Test" tab and uploading a coversheet image that was not in your initial training set.
+
 ## Output: Table & Blob Storage (Processed)
 
 This is the processed output in our storage medium of choice, Azure Table Storage.
