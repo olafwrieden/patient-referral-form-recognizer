@@ -35,13 +35,59 @@ Our goal is now to train an Azure Form Recognizer model to label, train, and tes
   - Referrals: This should not be a storage container but a table storage collection. This is the persistent store to which we will save our form data.
 - **Form Recognizer:** The processing service in Azure, part of Azure Cognitive Services or standalone service that can be created as a new resource via the azure portal.
 
-## Training Form Recognizer (Custom Form)
+## Azure Form Recognizer (Custom Form)
 
-In this interactive process, you tell Form Recognizer what text to extract based on your training dataset of at least 5 images. You may use the [Form Recognizer Studio](https://formrecognizer.appliedai.azure.com) experience to upload a set of coversheet documents with different values for the fields (e.g. names, checkmark selections, dates).
+In this interactive process, you tell Form Recognizer what text to extract from the coversheet, based on your training dataset of at least 5 images. You may use the [Form Recognizer Studio](https://formrecognizer.appliedai.azure.com) experience to upload a set of coversheet documents (supplied) with different values for the fields (e.g. fields, selection marks, signatures, and tables).
 
-Give a description key to all data types you label (eg. patient_first_name or is_gender_female). Once all responses have been tagged appropriately, reuse the same labels on the remaining 4+ samples of training data.
+### Create a Custom Form Project
 
-You are now ready to train your custom form model. Simply click the "Train" button and give a descriptive name to your model (we will reference this name later so make note of it). On completion, you may test the accuracy by navigating to the "Test" tab and uploading a coversheet image that was not in your initial training set.
+1. Navigate to [Form Recognizer Studio](https://formrecognizer.appliedai.azure.com) and select: _Custom form_ from the _Custom models_ section.
+2. Select: _Create a project_ to create a new custom forms project that will house your patient referral project.
+3. Follow the prompts to create a new Custom Forms project:
+
+- **Project Details**
+  - Project Name: _Patient Referrals_
+  - Description: _Extracts patient referral data from standardized coversheet._
+- **Service Resource**
+  - Subscription: Select your subscription
+  - Resource Group: Select the resource group with your Form Recognizer resource
+  - Form Recognizer or Cognitive Service: Select your cognitive service
+- **Training Data Source**
+  - Subscription: Select your subscription
+  - Resource Group: Select the resource group with your Storage Account
+  - Storage Account: Select your storage account
+  - Blob Container: Select the blob container where your model training data will be located ie. `training`
+  - Folder path (optional): Path to your subfolder (if any)
+- **Review & Create**
+  - Ensure all details are correct and click: *Create Project*
+
+### Label the Form Fields
+
+1. Copy the sample taining data from the [training samples](samples/01-training) folder into the storage account container you specific for training when you created your project.
+2. Open your Form Recognizer Custom Form project to the *Label data* tab. You should now see a preview of these files.
+3. Begin to label the fields you wish to extract. Example: Select the "New Referral" checkbox (don't select the the text, just the checkbox). In the popup box. Type: "Is New Referral", now select "Selection Mark" to indicate this is selection mark field.
+4. Repeat step 3 for all responses. Importantly, always select the written response text in the samples, not the header (ie. Referrer Last Name) and ensure you use the correct data type.
+    - **Tip:** Give a description key to all data types you label (eg. patient_first_name or is_gender_female). Once all responses have been tagged appropriately, reuse the same labels on the remaining samples of training data.
+5. Once at least 5 samples have been labeled, you are ready to Train the model.
+
+### Training the Model
+
+1. In the *Label data* tab, click the *Train* button in the top right corner
+2. Enter a Model ID and Description
+3. Click: *Train*
+
+### Testing the Model
+
+Once you have trained a model, you can test it:
+
+1. Navigate to the *Test* tab
+2. Select your model in the drop-down next to the "Test model" title
+3. Add some sample testing data by clicking the `+ Add` button
+4. Pick one or more files from the [testing samples](samples/02-testing) folder. These vary from the coversheet images used in the initial training set to avoid bias by 100% matching against the model's training data.
+5. Click *Analyse* to process the file(s)
+6. View the document analysis results (on the right)
+
+Congratulations! You have successfully deployed, labeled, trained, and tested an Azure Form Recognizer Custom Form!
 
 ## Output: Table & Blob Storage (Processed)
 
