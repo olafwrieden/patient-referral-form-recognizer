@@ -10,11 +10,9 @@ Each health provider has their own style of referral document and while intent a
 
 Our goal is now to train an Azure Form Recognizer model to label, train, and test the optical character recognition to detect the values supplied in these referral forms, minimising the cognitive effort by frontline workers.
 
-## High-Level Process
+## High-Level: What happens end-to-end?
 
 ![Overview](./media/overview.png)
-
-## What happens end-to-end?
 
 1. When a new document is uploaded into the `incoming` container of the Storage Account, it is picked up for processing by the Azure Function (which listens for changes to blobs in this containers).
 2. The Azure Function reads the data of the blob and makes a call to the Azure Form Recognizer service via the SDK.
@@ -25,7 +23,7 @@ Our goal is now to train an Azure Form Recognizer model to label, train, and tes
 5. The file, regardless of the outcome is tagged (metadata) with the overall confidence score when it is moved between containers.
 6. Once processing has completed and the file has been moved, it will disappear from the `incoming` (source) container.
 
-## Deploying the Resources
+## Let's Build: Deploying the Resources
 
 - **Azure Function:** An Azure Function is defined to perform the form recognition and perform conditional actions such as moving the form to a new storage container as per our arbitrary requirements. This function is triggered by a `BlobTrigger` - when a blob in a storage container changes, such as when it is added.
 - **Storage Account:** The storage account is the underlying storage medium in our demo, it contains 3 containers and a table store called 'referrals':
