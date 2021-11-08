@@ -1,6 +1,6 @@
 # Azure Form Recognizer: Patient Referrals
 
-> The purpose of this repository is to demonstrate the use of [Azure Form Recognizer](https://azure.microsoft.com/en-au/services/form-recognizer) (v3) in evaluating a patient referral form sent from doctors and hospitals. It is assumed that doctors will attach a standarized coversheet when they refer a patient.
+> The purpose of this repository is to demonstrate the use of [Azure Form Recognizer](https://azure.microsoft.com/en-au/services/form-recognizer) (v3) in evaluating a patient referral form sent from doctors and hospitals. It is assumed that doctors will attach a [standarized coversheet](/samples/empty-coversheet.pdf) when they refer a patient.
 
 ## Introduction
 
