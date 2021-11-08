@@ -5,7 +5,7 @@
       "type": "blobTrigger",
       "direction": "in",
       "path": "incoming/{name}",
-      "connection": "nswhealth_STORAGE"
+      "connection": "FORM_RECOGNIZER_STORAGE"
     }
   ],
   "scriptFile": "../dist/patient-referral-form-recognizer/index.js"
