@@ -22,7 +22,7 @@ const blobTrigger: AzureFunction = async function (
   const endpoint = process.env["FORM_RECOGNIZER_ENDPOINT"];
   const apiKey = process.env["FORM_RECOGNIZER_API_KEY"];
   const modelId = process.env["FORM_RECOGNIZER_MODEL_ID"];
-  const storageKey = process.env["nswhealth_STORAGE"];
+  const storageKey = process.env["FORM_RECOGNIZER_STORAGE"];
   const MIN_CONFIDENCE_SCORE = 0.8; // Change to adjust acceptable score (0-1)
 
   // Configure Analysis Client
