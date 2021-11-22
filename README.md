@@ -57,32 +57,36 @@ In this interactive process, you tell Form Recognizer what text to extract from 
   - Blob Container: Select the blob container where your model training data will be located ie. `training`
   - Folder path (optional): Path to your subfolder (if any)
 - **Review & Create**
-  - Ensure all details are correct and click: *Create Project*
+  - Ensure all details are correct and click: _Create Project_
+
+| Project Details                                                                           | Service Resources                                                                                     | Training Source                                                                                   | Review                                                                          |
+| :---------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------ |
+| ![Project Details Screenshot](./media/steps/create-project/01-create-project-details.png) | ![Service Resources Screenshot](./media/steps/create-project/02-create-project-service-resources.png) | ![Training Source Screenshot](./media/steps/create-project/03-create-project-training-source.png) | ![Review Screenshot](./media/steps/create-project/04-create-project-review.png) |
 
 ### Label the Form Fields
 
 1. Copy the sample taining data from the [training samples](samples/01-training) folder into the storage account container you specific for training when you created your project.
-2. Open your Form Recognizer Custom Form project to the *Label data* tab. You should now see a preview of these files.
+2. Open your Form Recognizer Custom Form project to the _Label data_ tab. You should now see a preview of these files.
 3. Begin to label the fields you wish to extract. Example: Select the "New Referral" checkbox (don't select the the text, just the checkbox). In the popup box. Type: "Is New Referral", now select "Selection Mark" to indicate this is selection mark field.
 4. Repeat step 3 for all responses. Importantly, always select the written response text in the samples, not the header (ie. Referrer Last Name) and ensure you use the correct data type.
-    - **Tip:** Give a description key to all data types you label (eg. patient_first_name or is_gender_female). Once all responses have been tagged appropriately, reuse the same labels on the remaining samples of training data.
+   - **Tip:** Give a description key to all data types you label (eg. patient_first_name or is_gender_female). Once all responses have been tagged appropriately, reuse the same labels on the remaining samples of training data.
 5. Once at least 5 samples have been labeled, you are ready to Train the model.
 
 ### Training the Model
 
-1. In the *Label data* tab, click the *Train* button in the top right corner
+1. In the _Label data_ tab, click the _Train_ button in the top right corner
 2. Enter a Model ID and Description
-3. Click: *Train*
+3. Click: _Train_
 
 ### Testing the Model
 
 Once you have trained a model, you can test it:
 
-1. Navigate to the *Test* tab
+1. Navigate to the _Test_ tab
 2. Select your model in the drop-down next to the "Test model" title
 3. Add some sample testing data by clicking the `+ Add` button
 4. Pick one or more files from the [testing samples](samples/02-testing) folder. These vary from the coversheet images used in the initial training set to avoid bias by 100% matching against the model's training data.
-5. Click *Analyse* to process the file(s)
+5. Click _Analyse_ to process the file(s)
 6. View the document analysis results (on the right)
 
 Congratulations! You have successfully deployed, labeled, trained, and tested an Azure Form Recognizer Custom Form!
