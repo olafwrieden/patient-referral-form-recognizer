@@ -9,34 +9,39 @@ import {
   TableUtilities,
 } from "azure-storage";
 
+/**
+ * Blob Trigger Function to Process Patient Referral Forms.
+ * @param context Function App Context
+ * @param myBlob The Blob which triggered the Function
+ */
 const blobTrigger: AzureFunction = async function (
   context: Context,
   myBlob: any
 ): Promise<void> {
-  context.log("Blob trigger function processed blob...");
+  context.log("BEGIN: A new blob was detected!");
   context.log(`Blob Name: ${context.bindingData.name}`);
   context.log(`Blob Size: ${myBlob.length}`);
   context.log(`Blob URI: ${context.bindingData.uri}`);
 
-  // Set Variables
+  // Service Variables (secrets defined in env)
   const endpoint = process.env["FORM_RECOGNIZER_ENDPOINT"];
   const apiKey = process.env["FORM_RECOGNIZER_API_KEY"];
   const modelId = process.env["FORM_RECOGNIZER_MODEL_ID"];
   const storageKey = process.env["FORM_RECOGNIZER_STORAGE"];
-  const MIN_CONFIDENCE_SCORE = 0.8; // Change to adjust acceptable score (0-1)
+  const MIN_CONFIDENCE_SCORE = Number(process.env["MIN_CONFIDENCE_SCORE"]);
 
-  // Configure Analysis Client
+  // Configure Document Analysis Client
   const credential = new AzureKeyCredential(apiKey);
   const client = new DocumentAnalysisClient(endpoint, credential);
 
-  // Instantiate Table Storage
+  // Instantiate Table & Blob Storage
   const tableService = createTableService(storageKey);
   const blobService = createBlobService(storageKey);
 
-  // Read Blob Stream
+  // Analyse Input Blob Stream using Custom Trained Model
   const poller = await client.beginAnalyzeDocuments(modelId, myBlob);
 
-  // Analyse Document Result
+  // Get Fields and Confidence from the Analysed Document
   const { documents } = await poller.pollUntilDone();
   const [{ fields, confidence }] = documents;
 
