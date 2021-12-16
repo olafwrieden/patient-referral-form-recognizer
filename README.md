@@ -76,6 +76,7 @@ If you are seeing the following CORS error after opening the Form Recognizer pro
 3. Begin to label the fields you wish to extract. Example: Select the "New Referral" checkbox (don't select the the text, just the checkbox). In the popup box. Type: "Is New Referral", now select "Selection Mark" to indicate this is selection mark field.
 4. Repeat step 3 for all responses. Importantly, always select the written response text in the samples, not the header (ie. Referrer Last Name) and ensure you use the correct data type.
    - **Tip:** Give a description key to all data types you label (eg. patient_first_name or is_gender_female). Once all responses have been tagged appropriately, reuse the same labels on the remaining samples of training data.
+   - **Tip:** If the text response spans multiple detected fields (eg. Name: `Peter` `Pan` then you can select both and mark them as the name).
 5. Once at least 5 samples have been labeled, you are ready to Train the model.
 
 | Unlabelled Training Dataset                                                        | 1. Labelling Selection Marks                                                          | 2. Labelling Text Fields                                                      | 3. Document Regions / Signatures                                               |
