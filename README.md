@@ -63,9 +63,15 @@ In this interactive process, you tell Form Recognizer what text to extract from 
 | :---------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------ |
 | ![Project Details Screenshot](./media/steps/create-project/01-create-project-details.png) | ![Service Resources Screenshot](./media/steps/create-project/02-create-project-service-resources.png) | ![Training Source Screenshot](./media/steps/create-project/03-create-project-training-source.png) | ![Review Screenshot](./media/steps/create-project/04-create-project-review.png) |
 
+#### Are you getting a CORS Error?
+
+If you are seeing the following CORS error after opening the Form Recognizer project, please ensure you follow this [guide to configure CORS](https://docs.microsoft.com/en-us/azure/applied-ai-services/form-recognizer/quickstarts/try-v3-form-recognizer-studio#configure-cors). Please note that the origin URL must not contain a trailing `/` character.
+
+![Screenshot of CORS Error](./media/steps/studio-blob-cors-error.png)
+
 ### Label the Form Fields
 
-1. Copy the sample taining data from the [training samples](samples/01-training) folder into the storage account container you specific for training when you created your project.
+1. Copy the sample taining data from the [training samples](samples/01-training) folder into the storage account container you specific for training when you created your project (e.g. `training` container).
 2. Open your Form Recognizer Custom Form project to the _Label data_ tab. You should now see a preview of these files.
 3. Begin to label the fields you wish to extract. Example: Select the "New Referral" checkbox (don't select the the text, just the checkbox). In the popup box. Type: "Is New Referral", now select "Selection Mark" to indicate this is selection mark field.
 4. Repeat step 3 for all responses. Importantly, always select the written response text in the samples, not the header (ie. Referrer Last Name) and ensure you use the correct data type.
