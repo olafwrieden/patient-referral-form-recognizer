@@ -156,4 +156,5 @@ If you found this resource helpful, feel free to [connect with me on LinkedIn](h
 
 <a href="https://www.buymeacoffee.com/olafwrieden" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;"></a>
 
-<div class="badge-base LI-profile-badge" data-locale="en_US" data-size="medium" data-theme="light" data-type="HORIZONTAL" data-vanity="olafwrieden" data-version="v1"><a class="badge-base__link LI-simple-link" href="https://au.linkedin.com/in/olafwrieden?trk=profile-badge">Olaf Wrieden</a></div>
+Best regards,   
+[Olaf Wrieden](https://linkedin.com/in/olafwrieden)
