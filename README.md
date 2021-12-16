@@ -79,7 +79,7 @@ If you are seeing the following CORS error after opening the Form Recognizer pro
    - **Tip:** If the text response spans multiple detected fields (eg. Name: `Peter` `Pan` then you can select both and mark them as the name).
 5. Once at least 5 samples have been labeled, you are ready to Train the model.
 
-| Unlabelled Training Dataset                                                        | 1. Labelling Selection Marks                                                          | 2. Labelling Text Fields                                                      | 3. Document Regions / Signatures                                               |
+| Initially: Unlabelled Training Dataset                                             | 1. Labelling Selection Marks                                                          | 2. Labelling Text Fields                                                      | 3. Document Regions / Signatures                                               |
 | :--------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------ | :---------------------------------------------------------------------------- | :----------------------------------------------------------------------------- |
 | ![Unlabelled Training Data](./media/steps/train-model/initial-data-unlabelled.png) | ![Labelling Selection Marks](./media/steps/train-model/labelling-selection-marks.png) | ![Labelling Text Fields](./media/steps/train-model/labelling-text-fields.png) | ![Labelling Document Regions](./media/steps/train-model/labelling-regions.png) |
 
@@ -96,6 +96,7 @@ If your text fields are dates or integers for example, you may wish to update th
 3. Click: _Train_
 
 ![Train a New Model](./media/steps/train-model/train-new-model.png)
+
 ### Testing the Model
 
 Once you have trained a model, you can test it:
