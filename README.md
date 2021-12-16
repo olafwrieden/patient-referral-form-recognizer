@@ -94,6 +94,7 @@ If your text fields are dates or integers for example, you may wish to update th
 1. In the _Label data_ tab, click the _Train_ button in the top right corner
 2. Enter a Model ID and Description
 3. Click: _Train_
+4. Once trained, the model will be displayed in the _Models_ tab
 
 ![Train a New Model](./media/steps/train-model/train-new-model.png)
 
