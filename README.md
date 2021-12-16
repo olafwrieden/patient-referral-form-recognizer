@@ -23,7 +23,7 @@ Our goal is now to train an Azure Form Recognizer model to label, train, and tes
 5. The file, regardless of the outcome is tagged (metadata) with the overall confidence score when it is moved between containers.
 6. Once processing has completed and the file has been moved, it will disappear from the `incoming` (source) container.
 
-## Step 1: Let's Build - Deploying the Resources
+## Chapter 1: Let's Build - Deploying the Resources
 
 - **Azure Function:** An Azure Function is defined to perform the form recognition and perform conditional actions such as moving the form to a new storage container as per our arbitrary requirements. This function is triggered by a `BlobTrigger` - when a blob in a storage container changes, such as when it is added.
 - **Storage Account:** The storage account is the underlying storage medium in our demo, it contains 3 containers and a table store called 'referrals':
@@ -33,11 +33,11 @@ Our goal is now to train an Azure Form Recognizer model to label, train, and tes
   - Referrals: This should not be a storage container but a table storage collection. This is the persistent store to which we will save our form data.
 - **Form Recognizer:** The processing service in Azure, part of Azure Cognitive Services or standalone service that can be created as a new resource via the azure portal.
 
-## Step 2: Azure Form Recognizer (Custom Form)
+## Chapter 2: Azure Form Recognizer (Custom Form)
 
 In this interactive process, you tell Form Recognizer what text to extract from the coversheet, based on your training dataset of at least 5 images. You may use the [Form Recognizer Studio](https://formrecognizer.appliedai.azure.com) experience to upload a set of coversheet documents (supplied) with different values for the fields (e.g. fields, selection marks, signatures, and tables).
 
-### Create a Custom Form Project
+### 1️⃣ Create a Custom Form Project
 
 1. Navigate to [Form Recognizer Studio](https://formrecognizer.appliedai.azure.com) and select: _Custom form_ from the _Custom models_ section.
 2. Select: _Create a project_ to create a new custom forms project that will house your patient referral project.
@@ -69,7 +69,7 @@ If you are seeing the following CORS error after opening the Form Recognizer pro
 
 ![Screenshot of CORS Error](./media/steps/studio-blob-cors-error.png)
 
-### Label the Form Fields
+### 2️⃣ Label the Form Fields
 
 1. Copy the sample taining data from the [training samples](samples/01-training) folder into the storage account container you specific for training when you created your project (e.g. `training` container).
 2. Open your Form Recognizer Custom Form project to the _Label data_ tab. You should now see a preview of these files.
@@ -89,7 +89,7 @@ If your text fields are dates or integers for example, you may wish to update th
 
 ![Updating Sub Types](./media/steps/train-model/data-subtypes.png)
 
-### Training the Model
+### 3️⃣ Training the Model
 
 1. In the _Label data_ tab, click the _Train_ button in the top right corner
 2. Enter a Model ID and Description
@@ -98,7 +98,7 @@ If your text fields are dates or integers for example, you may wish to update th
 
 ![Train a New Model](./media/steps/train-model/train-new-model.png)
 
-### Testing the Model
+### 4️⃣ Optional: Testing the Model (for accuracy)
 
 Once you have trained a model, you can test it:
 
@@ -109,7 +109,7 @@ Once you have trained a model, you can test it:
 5. Click _Analyse_ to process the file(s)
 6. View the document analysis results (on the right)
 
-Congratulations! You have successfully deployed, labeled, trained, and tested an Azure Form Recognizer Custom Form!
+🎉 Congratulations! You have successfully deployed, labeled, trained, and tested an Azure Form Recognizer Custom Form!
 
 ## Output: Table & Blob Storage (Processed)
 
