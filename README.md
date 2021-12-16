@@ -23,7 +23,7 @@ Our goal is now to train an Azure Form Recognizer model to label, train, and tes
 5. The file, regardless of the outcome is tagged (metadata) with the overall confidence score when it is moved between containers.
 6. Once processing has completed and the file has been moved, it will disappear from the `incoming` (source) container.
 
-## Let's Build: Deploying the Resources
+## Step 1: Let's Build - Deploying the Resources
 
 - **Azure Function:** An Azure Function is defined to perform the form recognition and perform conditional actions such as moving the form to a new storage container as per our arbitrary requirements. This function is triggered by a `BlobTrigger` - when a blob in a storage container changes, such as when it is added.
 - **Storage Account:** The storage account is the underlying storage medium in our demo, it contains 3 containers and a table store called 'referrals':
@@ -33,7 +33,7 @@ Our goal is now to train an Azure Form Recognizer model to label, train, and tes
   - Referrals: This should not be a storage container but a table storage collection. This is the persistent store to which we will save our form data.
 - **Form Recognizer:** The processing service in Azure, part of Azure Cognitive Services or standalone service that can be created as a new resource via the azure portal.
 
-## Azure Form Recognizer (Custom Form)
+## Step 2: Azure Form Recognizer (Custom Form)
 
 In this interactive process, you tell Form Recognizer what text to extract from the coversheet, based on your training dataset of at least 5 images. You may use the [Form Recognizer Studio](https://formrecognizer.appliedai.azure.com) experience to upload a set of coversheet documents (supplied) with different values for the fields (e.g. fields, selection marks, signatures, and tables).
 
@@ -78,12 +78,23 @@ If you are seeing the following CORS error after opening the Form Recognizer pro
    - **Tip:** Give a description key to all data types you label (eg. patient_first_name or is_gender_female). Once all responses have been tagged appropriately, reuse the same labels on the remaining samples of training data.
 5. Once at least 5 samples have been labeled, you are ready to Train the model.
 
+| Unlabelled Training Dataset                                                        | 1. Labelling Selection Marks                                                          | 2. Labelling Text Fields                                                      | 3. Document Regions / Signatures                                               |
+| :--------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------ | :---------------------------------------------------------------------------- | :----------------------------------------------------------------------------- |
+| ![Unlabelled Training Data](./media/steps/train-model/initial-data-unlabelled.png) | ![Labelling Selection Marks](./media/steps/train-model/labelling-selection-marks.png) | ![Labelling Text Fields](./media/steps/train-model/labelling-text-fields.png) | ![Labelling Document Regions](./media/steps/train-model/labelling-regions.png) |
+
+#### Update Data Sub Types
+
+If your text fields are dates or integers for example, you may wish to update the sub type of these fields as follows:
+
+![Updating Sub Types](./media/steps/train-model/data-subtypes.png)
+
 ### Training the Model
 
 1. In the _Label data_ tab, click the _Train_ button in the top right corner
 2. Enter a Model ID and Description
 3. Click: _Train_
 
+![Train a New Model](./media/steps/train-model/train-new-model.png)
 ### Testing the Model
 
 Once you have trained a model, you can test it:
