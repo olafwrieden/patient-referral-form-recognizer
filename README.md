@@ -111,12 +111,49 @@ Once you have trained a model, you can test it:
 
 🎉 Congratulations! You have successfully deployed, labeled, trained, and tested an Azure Form Recognizer Custom Form!
 
-## Output: Table & Blob Storage (Processed)
+## Chapter 3: Azure Function with Form Recognizer SDK
 
-This is the processed output in our storage medium of choice, Azure Table Storage.
+In this chapter, we are looking at implementing the Azure Function code for the Azure Function App you deployed in chapter 1. Please note that Azure Functions supports a range of common programming languages - [documented here](https://docs.microsoft.com/en-us/azure/azure-functions/supported-languages).
+
+It is also possible to use "no/low-code" tools including [Azure Logic Apps](https://azure.microsoft.com/en-au/services/logic-apps) or [Power Automate](https://powerautomate.microsoft.com/en-us) for this scenario. However, this example shows the use of a Blob-triggered Azure Function with the TypeScript language.
+
+### 1️⃣ Deploying the Code
+
+It is assumed you have basic coding knowledge and are familiar with the concept of CI/CD to deploy the Function App code with version control in mind.
+
+1. Create a new "Blob Trigger" function in the Azure Function App and use the TypeScript / JavaScript code supplied in the [index.ts](./patient-referral-form-recognizer/index.ts) file.
+2. Configure the following environment variables to connect the Azure Function to the Storage Account and Form Recognizer instance deployed in Chapter 1.
+
+```json
+{
+  "MIN_CONFIDENCE_SCORE": 0.8, // Minimum acceptable confidence (between 0-1)
+  "FORM_RECOGNIZER_STORAGE": "DefaultEndpointsProtocol=https;AccountName=[...];AccountKey=[...];EndpointSuffix=core.windows.net",
+  "FORM_RECOGNIZER_API_KEY": "[...]",
+  "FORM_RECOGNIZER_MODEL_ID": "[...]",
+  "FORM_RECOGNIZER_ENDPOINT": "https://[...].cognitiveservices.azure.com"
+}
+```
+
+> ℹ️ To locate the Storage Account connection string for `FORM_RECOGNIZER_STORAGE`, navigate to your _Storage Account_ in the Azure Portal, click on _Access Keys_ and copy the _Connection String_ value of either _key1_ or _key2_.
+
+Now that your function code is deployed. It whenever a new blob is added into the Storage Account container, the function is triggered and begins processing the blob. As per the Function App code, the output will be saved into Azure Table Storage, a cheap, and extremely fast key-value pair store. You may decide to switch this out for a SQL Database to meet your operational needs.
+
+## Chapter 4: What just happened?
+
+If you have made it this far, you will see that your detected fields have been saved into Azure Table Storage as per out architecture diagram.
 
 ![Azure Table Storage Screenshot](./media/table-storage-output.png)
 
-Processed file with confidence metadata added:
+Additionally, the processed file - with confidence metadata added - is moved from the `incoming` container to either the `processed` or `review` container depending on whether the confidence score is greater than or less than the `MIN_CONFIDENCE_SCORE` threshold defined in our environment variables:
 
 ![Metadata added to Blob](./media/processed-file-metadata.png)
+
+### Conclusion
+
+Azure Form Recognizer is just one of multiple Applied AI services available in the Azure cloud. The implementation of this service repends on the scenario and (for demo purposes) does not currently account for additional security requirements your organization may have.
+
+If you found this resource helpful, feel free to [connect with me on LinkedIn](https://linkedin.com/in/olafwrieden) or make my day by buying me a coffee to keep fuelling projects like these.
+
+<a href="https://www.buymeacoffee.com/olafwrieden" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;"></a>
+
+<div class="badge-base LI-profile-badge" data-locale="en_US" data-size="medium" data-theme="light" data-type="HORIZONTAL" data-vanity="olafwrieden" data-version="v1"><a class="badge-base__link LI-simple-link" href="https://au.linkedin.com/in/olafwrieden?trk=profile-badge">Olaf Wrieden</a></div>
