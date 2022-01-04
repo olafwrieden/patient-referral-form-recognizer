@@ -89,6 +89,12 @@ If your text fields are dates or integers for example, you may wish to update th
 
 ![Updating Sub Types](./media/steps/train-model/data-subtypes.png)
 
+#### Are you seeing a 'Label assignment warning'?
+
+This occurs because you may have selected more than one snippet of text when the chosen field type (ie. selection marks or signatures) only support one. Simply click out of the document and back into it to clear your selection and try again.
+
+![Labelling Warning](./media/steps/train-model/signature-labelling-warning.png)
+
 ### 3️⃣ Training the Model
 
 1. In the _Label data_ tab, click the _Train_ button in the top right corner
