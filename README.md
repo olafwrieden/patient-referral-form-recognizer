@@ -97,6 +97,8 @@ This occurs because you may have selected more than one snippet of text when the
 
 ### 3️⃣ Training the Model
 
+> ⚠️ Please remember that (at the time of writing this) least 5 OCR files are required to train a model. A 'ModelBuildError' will appear if you attempt to train with less than 5 files.
+
 1. In the _Label data_ tab, click the _Train_ button in the top right corner
 2. Enter a Model ID and Description
 3. Click: _Train_
