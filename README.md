@@ -156,6 +156,103 @@ Additionally, the processed file - with confidence metadata added - is moved fro
 
 ![Metadata added to Blob](./media/processed-file-metadata.png)
 
+## Chapter 5: Copying models between instances
+
+In the real scenario that you have multiple instances of Azure Form Recognizer for dev/test and prod for instance, you may wish to copy a model you trained in your dev/test environment into the production environment.
+
+> ✨ **Tip:** The Form Recognizer Studio (web interface) does not currently support this feature. However, it is simple to [use the API](https://australiaeast.dev.cognitive.microsoft.com/docs/services/form-recognizer-api-v3-0-preview-1) in this scenario, or [download the API Definition](https://australiaeast.dev.cognitive.microsoft.com/docs/services/form-recognizer-api-v3-0-preview-1/export?DocumentFormat=Swagger&ApiName=Form%20Recognizer%202021-09-30-preview) and import it into [Postman](https://www.postman.com/) or other HTTP clients.
+
+**Pre-requisites:** We need to collect the following four pieces of information:
+
+- Dev/Test Form Recognizer Key
+- Prod Form Recognizer Key
+- The Model ID which we wish to copy from Dev/Test to Prod
+- Region of the Dev/Test and Prod Instances
+
+![Retrieving Access Keys](./media/steps/copy-model/keys-and-endpoint.jpg)
+
+### 1️⃣ Generating a Copy Authorization
+
+We first [Generate a Copy Authorization](https://australiaeast.dev.cognitive.microsoft.com/docs/services/form-recognizer-api-v3-0-preview-1/operations/AuthorizeCopyDocumentModel). This generates an authorization key we can user to copy a model to this location with specified model id and optional description.
+
+#### Query Parameters
+
+- `Ocp-Apim-Subscription-Key`: Must contain the key of the destination Form Recognizer instance, in this case the _Production Form Recognizer Key_ (copied earlier).
+- `Content-Type`: Must be set to `application/json`
+
+#### Request Body
+
+We supply the name that we would like to give our model upon transfer, and an optional description.
+
+```json
+{
+  "modelId": "TransferredModel",
+  "description": "This is a description for our copied model, as it will appear in the target resource."
+}
+```
+
+#### Example: Getting a Model Copy Authorization
+
+```http
+POST https://australiaeast.api.cognitive.microsoft.com/formrecognizer/documentModels:authorizeCopy?api-version=2021-09-30-preview HTTP/1.1
+Host: australiaeast.api.cognitive.microsoft.com
+Content-Type: application/json
+Ocp-Apim-Subscription-Key: ••••••••••••••••••••••••••••••••
+
+{
+  "modelId": "TransferredModel",
+  "description": "This is a description for our copied model, as it will appear in the target resource."
+}
+```
+
+##### Sample API Response
+
+We need to copy the response body for the next step.
+
+```json
+...
+{
+  "targetResourceId": "/subscriptions/[subscription_id]/resourceGroups/[resource_group]/providers/Microsoft.CognitiveServices/accounts/[prod-form-recognizer-name]",
+  "targetResourceRegion": "australiaeast",
+  "targetModelId": "TransferredModel",
+  "targetModelLocation": "https://australiaeast.api.cognitive.microsoft.com/formrecognizer/documentModels/TransferredModel?api-version=2021-09-30-preview",
+  "accessToken": "ffd3e3f9-e9de-4e9c-b29d-4ac16bdf4f3e",
+  "expirationDateTime": "2022-02-01T09:58:50Z"
+}
+```
+
+### 2️⃣ Copying the Model to Production
+
+Now that we have an authorization token in hand, we can invoke the [Copy Model API](https://australiaeast.dev.cognitive.microsoft.com/docs/services/form-recognizer-api-v3-0-preview-1/operations/CopyDocumentModelTo), which copies the model to the target (production) resource.
+
+#### Query Parameters
+
+- `modelId`: Must contain the ID of the model we wish to transfer (i.e. the ID of the model we trained in Chapter 2 and now wish to copy to the production environment).
+
+#### Request Headers
+
+- `Ocp-Apim-Subscription-Key`: Must contain the key of the source Form Recognizer instance, in this case the _Dev/Test Form Recognizer Key_ (copied earlier).
+- `Content-Type`: Must be set to `application/json`
+
+#### Request Body
+
+We simply copy the response body from the previous step, which contains the authorization token and resource information.
+
+```json
+{
+  "targetResourceId": "/subscriptions/[subscription_id]/resourceGroups/[resource_group]/providers/Microsoft.CognitiveServices/accounts/[prod-form-recognizer-name]",
+  "targetResourceRegion": "australiaeast",
+  "targetModelId": "TransferredModel",
+  "targetModelLocation": "https://australiaeast.api.cognitive.microsoft.com/formrecognizer/documentModels/TransferredModel?api-version=2021-09-30-preview",
+  "accessToken": "ffd3e3f9-e9de-4e9c-b29d-4ac16bdf4f3e",
+  "expirationDateTime": "2022-02-01T09:58:50Z"
+}
+```
+
+When the request is made, you should receive a `202 Accepted` status code. This indicates that the model will now be copied in the background. For error codes and up-to-date information, please refer to the [Cognitive Services API Documentation](https://australiaeast.dev.cognitive.microsoft.com/docs/services/form-recognizer-api-v3-0-preview-1/operations/CopyDocumentModelTo)
+
+🎉 Congratulations, you have successfully copied the model from one instance to another.
+
 ### Conclusion
 
 Azure Form Recognizer is just one of multiple Applied AI services available in the Azure cloud. The implementation of this service repends on the scenario and (for demo purposes) does not currently account for additional security requirements your organization may have.
@@ -164,5 +261,9 @@ If you found this resource helpful, feel free to [connect with me on LinkedIn](h
 
 <a href="https://www.buymeacoffee.com/olafwrieden" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;"></a>
 
-Best regards,   
+Best regards,
 [Olaf Wrieden](https://linkedin.com/in/olafwrieden)
+
+```
+
+```
