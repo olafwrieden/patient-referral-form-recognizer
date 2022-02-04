@@ -3,7 +3,7 @@
  the patient referral (metadata only, no patient PII).
  */
 CREATE TABLE ReferralMetadata (
-  ID INT IDENTITY(1, 1) NOT NULL,
+  id INT IDENTITY(1, 1) NOT NULL,
   -- Referral Data
   referral_guid NVARCHAR(100) NOT NULL,
   sending_fax_number NVARCHAR(100) NOT NULL,
