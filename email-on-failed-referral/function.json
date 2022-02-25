@@ -1,0 +1,18 @@
+{
+  "bindings": [
+    {
+      "name": "myBlob",
+      "type": "blobTrigger",
+      "direction": "in",
+      "path": "failed/{name}",
+      "connection": "FORM_RECOGNIZER_STORAGE"
+    },
+    {
+      "type": "sendGrid",
+      "name": "$return",
+      "direction": "out",
+      "apiKey": "SENDGRID_API_KEY"
+    }
+  ],
+  "scriptFile": "../dist/email-on-failed-referral/index.js"
+}
