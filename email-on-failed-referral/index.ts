@@ -21,11 +21,14 @@ const sendFailedReferralEmail: AzureFunction = async function (
     return { email: to };
   });
 
+  // Read the key metadata from the blob
+  const metadata = formatMetadata(context.bindingData.metadata);
+
   // Construct the SendGrid Message
   const message = {
     personalizations: [{ to: toAddresses }],
     from: { email: SENDGRID_FROM_ADDRESS },
-    subject: "ACTION: New Manual Referral",
+    subject: `Non-referral from Fax/OCR - sent to fax #: ${metadata.destinationFaxNo}`,
     content: [
       {
         type: "text/plain",
@@ -44,6 +47,13 @@ const sendFailedReferralEmail: AzureFunction = async function (
   };
 
   return message; // Return Message to SendGrid Output Binding
+};
+
+const formatMetadata = (metadata: Object) => {
+  return {
+    destinationFaxNo: metadata["destination_fax_number"] || "",
+    // TODO: Add any other metadata here that may exist on the blob.
+  };
 };
 
 export default sendFailedReferralEmail;
