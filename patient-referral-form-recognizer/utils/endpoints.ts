@@ -60,8 +60,7 @@ export const submitReferral = async (
     })
     .catch((error: AxiosError) => {
       console.log(
-        `Status: ${error.response?.status}\n
-        - Message: ${error.response?.data}`
+        `Status: ${error.response?.status} - Message: ${error.message}`
       );
       return error.response?.status || 408;
     });

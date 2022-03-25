@@ -5,9 +5,9 @@
 CREATE TABLE ReferralMetadata (
   id INT IDENTITY(1, 1) NOT NULL,
   -- Referral Data
-  referral_guid NVARCHAR(100) NOT NULL,
-  sending_fax_number NVARCHAR(100) NOT NULL,
-  receiving_fax_number NVARCHAR(100) NOT NULL,
+  referral_guid NVARCHAR(100),
+  sending_fax_number NVARCHAR(100),
+  receiving_fax_number NVARCHAR(100),
   is_coversheet BIT,
   is_referral BIT,
   number_detected_pages SMALLINT,
@@ -18,6 +18,9 @@ CREATE TABLE ReferralMetadata (
   referral_type_update_confidence FLOAT,
   referral_type_rfi BIT,
   referral_type_rfi_confidence FLOAT,
+  -- Referral Information
+  service_name NVARCHAR(100),
+  service_name_confidence FLOAT,
   referred_to_facility NVARCHAR(100),
   referred_to_facility_confidence FLOAT,
   destination_fax_number NVARCHAR(100),
@@ -34,14 +37,17 @@ CREATE TABLE ReferralMetadata (
   referrer_practice_name_confidence FLOAT,
   referrer_provider_number NVARCHAR(100),
   referrer_provider_number_confidence FLOAT,
+  referrer_phone_number NVARCHAR(100),
+  referrer_phone_number_confidence FLOAT,
   is_emergency_referral BIT,
-  is_emergency_referral_confidence FLOAT,
   -- Metadata
+  filename NVARCHAR(100),
+  is_successful_sink BIT,
   aggregate_confidence FLOAT,
   fr_model_id NVARCHAR(100),
   fr_api_version NVARCHAR(100),
   received_at DATETIME,
   analysed_at DATETIME,
   stored_at DATETIME,
-  reported_at DATETIME NOT NULL DEFAULT GetDate()
+  reported_at DATETIME DEFAULT GETDATE()
 )
