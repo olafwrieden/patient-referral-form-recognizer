@@ -3,11 +3,24 @@ import {
   DocumentAnalysisClient,
 } from "@azure/ai-form-recognizer";
 import { AzureFunction, Context } from "@azure/functions";
-import {
-  createBlobService,
-  createTableService,
-  TableUtilities,
-} from "azure-storage";
+import { writeMetadata } from "./utils/database";
+import { acquireToken, submitReferral } from "./utils/endpoints";
+import { IReferralData } from "./utils/Interfaces";
+import { mergeDeep } from "./utils/json";
+import { moveBlob } from "./utils/blob";
+import { parseFilename, parseMetadata } from "./utils/metadata";
+
+// Service Variables (secrets defined in env)
+const FR_ENDPOINT = process.env["FORM_RECOGNIZER_ENDPOINT"] || "";
+const FR_API_KEY = process.env["FORM_RECOGNIZER_API_KEY"] || "";
+const FR_MODEL_ID = process.env["FORM_RECOGNIZER_MODEL_ID"] || "";
+
+// Configure Document Analysis Client
+const credential = new AzureKeyCredential(FR_API_KEY);
+const client = new DocumentAnalysisClient(FR_ENDPOINT, credential);
+
+// Indicator if API call was successful
+let sinkSuccess: boolean = false;
 
 /**
  * Blob Trigger Function to Process Patient Referral Forms.
@@ -18,155 +31,74 @@ const blobTrigger: AzureFunction = async function (
   context: Context,
   myBlob: any
 ): Promise<void> {
-  context.log("BEGIN: A new blob was detected!");
+  context.log("BEGIN: A new file was detected!");
   context.log(`Blob Name: ${context.bindingData.name}`);
   context.log(`Blob Size: ${myBlob.length}`);
   context.log(`Blob URI: ${context.bindingData.uri}`);
 
-  // Service Variables (secrets defined in env)
-  const endpoint = process.env["FORM_RECOGNIZER_ENDPOINT"];
-  const apiKey = process.env["FORM_RECOGNIZER_API_KEY"];
-  const modelId = process.env["FORM_RECOGNIZER_MODEL_ID"];
-  const storageKey = process.env["FORM_RECOGNIZER_STORAGE"];
-  const MIN_CONFIDENCE_SCORE = Number(process.env["MIN_CONFIDENCE_SCORE"]);
+  // Step 1: Parse Filename Metadata
+  const fileMetadata = await parseFilename(context.bindingData.name);
 
-  // Configure Document Analysis Client
-  const credential = new AzureKeyCredential(apiKey);
-  const client = new DocumentAnalysisClient(endpoint, credential);
-
-  // Instantiate Table & Blob Storage
-  const tableService = createTableService(storageKey);
-  const blobService = createBlobService(storageKey);
-
-  // Analyse Input Blob Stream using Custom Trained Model
-  const poller = await client.beginAnalyzeDocuments(modelId, myBlob);
+  // Step 2: Analyse Input Blob Stream using Custom Trained Model
+  const poller = await client.beginAnalyzeDocument(FR_MODEL_ID, myBlob);
 
   // Get Fields and Confidence from the Analysed Document
-  const { documents } = await poller.pollUntilDone();
-  const [{ fields, confidence }] = documents;
+  const result = await poller.pollUntilDone();
 
-  // If overall confidence is low, move blob to manual container
-  if (confidence < MIN_CONFIDENCE_SCORE) {
-    // Move Blob to 'manual' container
-    blobService.startCopyBlob(
-      context.bindingData.uri,
-      "manual",
-      context.bindingData.name,
-      function (error, result, response) {
-        if (error) {
-          context.log(JSON.stringify(response));
-        }
-        // When moved, update metadata with confidence score
-        if (response.isSuccessful) {
-          blobService.setBlobMetadata(
-            "manual",
-            result.name,
-            { scan_confidence: String(confidence) },
-            function (error, result, response) {
-              if (error) {
-                context.log(JSON.stringify(response));
-              }
-              if (response.isSuccessful) {
-                context.log(
-                  `Blob '${context.bindingData.name}' moved to 'manual'`
-                );
-                blobService.deleteBlobIfExists(
-                  "incoming",
-                  context.bindingData.name,
-                  function (error, result, response) {
-                    if (error) {
-                      context.log(JSON.stringify(response));
-                    }
-                    if (response.isSuccessful) {
-                      context.log(
-                        `Blob '${context.bindingData.name}' was deleted.`
-                      );
-                    }
-                  }
-                );
-              }
-            }
-          );
-        }
-      }
-    );
-  } else {
-    // Check if To Recipient is present, else don't save
-    const entGen = TableUtilities.entityGenerator;
+  // Extract Referral Metadata from Coversheet
+  const { reportData, apiData, isCoversheet, isReferral } = await parseMetadata(
+    result
+  );
 
-    // Construct Referral
-    let referral = {
-      PartitionKey: entGen.String("referral"),
-      RowKey: entGen.String(
-        String(`M${fields["Medicare Number"].content}_${new Date().getTime()}`)
-      ),
-      Overall_Confidence_Score: entGen.Int32(confidence),
+  // If the document is a coversheet or a referral, post it to the API
+  if (isCoversheet || isReferral) {
+    // Build Referral Header Data (minimum API Payload)
+    const headerdata: Partial<IReferralData> = {
+      resourceType: "Fax",
+      to: {
+        organization: { name: process.env["RECEIVING_ORGANIZATION"] || "" },
+        destinationFaxNo: fileMetadata.receivingNumber,
+      },
+      from: { sourceFaxNo: fileMetadata.sendingNumber },
+      payload: {
+        filename: context.bindingData.name,
+        type: context.bindingData.properties.contentType,
+        content: myBlob.toString("base64"),
+      },
     };
 
-    // Add fields
-    for (const [name, field] of Object.entries(fields)) {
-      referral[name.replace(/ /g, "_")] =
-        field.kind === "selectionMark"
-          ? entGen.Boolean(field.content === "selected" ? true : false)
-          : entGen.String(field.content);
-    }
+    // Merge Header Data and API (form field) data
+    const submissionData = await mergeDeep(headerdata, apiData);
 
-    // Save Referral
-    tableService.insertEntity(
-      "referrals",
-      referral,
-      function (error, result, response) {
-        if (error) {
-          context.log(JSON.stringify(response));
-        }
-        if (response.isSuccessful) {
-          blobService.startCopyBlob(
-            context.bindingData.uri,
-            "processed",
-            String(
-              `M${fields["Medicare Number"].content}_${new Date().getTime()}`
-            ),
-            function (error, result, response) {
-              if (error) {
-                context.log(JSON.stringify(response));
-              }
-              if (response.isSuccessful) {
-                blobService.setBlobMetadata(
-                  "processed",
-                  result.name,
-                  { scan_confidence: String(confidence) },
-                  function (error, result, response) {
-                    if (error) {
-                      context.log(JSON.stringify(response));
-                    }
-                    if (response.isSuccessful) {
-                      context.log(
-                        `Blob '${context.bindingData.name}' moved to 'processed'`
-                      );
-                      blobService.deleteBlobIfExists(
-                        "incoming",
-                        context.bindingData.name,
-                        function (error, result, response) {
-                          if (error) {
-                            context.log(JSON.stringify(response));
-                          }
-                          if (response.isSuccessful) {
-                            context.log(
-                              `Blob '${context.bindingData.name}' was deleted.`
-                            );
-                          }
-                        }
-                      );
-                    }
-                  }
-                );
-              }
-            }
-          );
-        }
-      }
-    );
+    // Step 3: Submit data to the API Endpoint
+    const { access_token } = await acquireToken();
+    const submission = await submitReferral(submissionData, access_token);
+    console.log(`Submission Status Code: ${submission}`);
+    if (submission === 200) {
+      sinkSuccess = true;
+    }
   }
+
+  // Step 4: Move blob to final container (and add metadata) depending on outcome of submission
+  const moveTo: string = sinkSuccess ? "passed" : "failed";
+  console.log(`Blob will be moved to: '${moveTo}' container`);
+
+  await moveBlob(context.bindingData.name, "incoming", moveTo, {
+    is_coversheet: String(isCoversheet),
+    sending_fax_number: String(fileMetadata.sendingNumber),
+    destination_fax_number: String(fileMetadata.receivingNumber),
+  });
+
+  // Step 5: Report Metadata to SQL Database for reporting
+  await writeMetadata(
+    fileMetadata,
+    reportData,
+    sinkSuccess,
+    new Date(), // TODO: Get time that the payload was analysed
+    new Date() // TODO: If API returns a timestamp, use it instead
+  )
+    .then(() => console.log("Metadata Reported Successfully"))
+    .catch((err) => console.log("Metadata Reporting Error: ", err));
 };
 
 export default blobTrigger;
