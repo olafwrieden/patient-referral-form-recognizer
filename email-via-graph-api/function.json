@@ -1,0 +1,12 @@
+{
+  "bindings": [
+    {
+      "name": "myBlob",
+      "type": "blobTrigger",
+      "direction": "in",
+      "path": "failed/{name}",
+      "connection": "FORM_RECOGNIZER_STORAGE"
+    }
+  ],
+  "scriptFile": "../dist/email-via-graph-api/index.js"
+}
