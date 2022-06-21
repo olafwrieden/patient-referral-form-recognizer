@@ -39,9 +39,9 @@ export const createEmailAsJson = (
       from: {
         emailAddress: { address: FROM_ADDRESS },
       },
-      saveToSentItems: "true",
       attachments: attachments,
     },
+    saveToSentItems: "true",
   };
 
   return addRecipients(email, recipients);

@@ -32,11 +32,11 @@ const sendFailedReferralEmail: AzureFunction = async (
     {
       "@odata.type": "#microsoft.graph.fileAttachment",
       name: context.bindingData.name,
-      contentBytes: myBlob,
+      contentBytes: myBlob.toString("base64"),
       contentType: context.bindingData.properties.contentType,
     },
   ]);
-  context.log(JSON.stringify(message, null, 2));
+  // context.log(JSON.stringify(message, null, 2));
 
   // Send Email
   sendEmail(process.env.FROM_ADDRESS, message);

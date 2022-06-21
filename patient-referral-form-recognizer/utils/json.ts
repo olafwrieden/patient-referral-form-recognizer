@@ -50,7 +50,7 @@ export const mergeDeep = (target: Object, ...sources: any) => {
         if (!target[key]) Object.assign(target, { [key]: {} });
         mergeDeep(target[key], source[key]);
       } else {
-        Object.assign(target, { [key]: source[key] });
+        if (!target[key]) Object.assign(target, { [key]: source[key] });
       }
     }
   }

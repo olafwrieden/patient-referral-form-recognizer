@@ -39,9 +39,9 @@ export interface IEmail {
     toRecipients?: Array<IGraphRecipient>;
     ccRecipients?: Array<IGraphRecipient>;
     bccRecipients?: Array<IGraphRecipient>;
-    saveToSentItems?: "true" | "false";
     bodyPreview?: string;
     importance?: "low" | "normal" | "high";
     attachments?: Array<IAttachment>;
   };
+  saveToSentItems?: "true" | "false";
 }

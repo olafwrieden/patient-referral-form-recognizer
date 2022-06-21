@@ -12,7 +12,7 @@ Our goal is now to train an Azure Form Recognizer model to label, train, and tes
 
 ## High-Level: What happens end-to-end?
 
-![Overview](./media/overview.png)
+![Overview](./media/high-level-overview.png)
 
 1. When a new document is uploaded into the `incoming` container of the Storage Account, it is picked up for processing by the Azure Function (which listens for changes to blobs in this containers).
 2. The Azure Function reads the data of the blob and makes a call to the Azure Form Recognizer service via the SDK.
@@ -101,8 +101,9 @@ This occurs because you may have selected more than one snippet of text when the
 
 1. In the _Label data_ tab, click the _Train_ button in the top right corner
 2. Enter a Model ID and Description
-3. Click: _Train_
-4. Once trained, the model will be displayed in the _Models_ tab
+3. If prompted to choose a Build mode, select _Template_ for this type of document
+4. Click: _Train_
+5. Once trained, the model will be displayed in the _Models_ tab
 
 ![Train a New Model](./media/steps/train-model/train-new-model.png)
 

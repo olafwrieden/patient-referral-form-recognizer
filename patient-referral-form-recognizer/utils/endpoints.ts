@@ -48,7 +48,7 @@ export const submitReferral = async (
     maxBodyLength: Infinity,
     headers: {
       "Content-Type": "text/plain",
-      authentication: `Bearer ${token}`,
+      authorization: `Bearer ${token}`,
       client_id: ENDPOINT_AUTH_USER,
       client_secret: ENDPOINT_AUTH_PASS,
     },
