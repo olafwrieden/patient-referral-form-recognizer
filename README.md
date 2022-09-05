@@ -264,6 +264,8 @@ If you found this resource helpful, feel free to [connect with me on LinkedIn](h
 Best regards,
 [Olaf Wrieden](https://linkedin.com/in/olafwrieden)
 
+Forked by Haard Shah - Keen to add new features to your cool repo
+
 ```
 
 ```
