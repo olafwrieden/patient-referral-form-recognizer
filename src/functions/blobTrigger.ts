@@ -3,7 +3,7 @@ import {
   DocumentAnalysisClient,
 } from "@azure/ai-form-recognizer";
 import { InvocationContext, app, output } from "@azure/functions";
-
+import {v4} from "uuid";
 const tableOutput = output.table({
   tableName: "referrals",
   connection: "STORAGE_ACCOUNT_KEY",
@@ -65,7 +65,7 @@ export async function processReferrals(
     let referral: ReferralEntity = {
       PartitionKey: "referral",
       RowKey: String(
-        `${fields["Patient Medical Number"].content}_${new Date().getTime()}`
+       v4()
       ),
       Overall_Confidence_Score: confidence,
     };
