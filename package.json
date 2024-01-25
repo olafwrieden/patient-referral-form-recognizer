@@ -13,7 +13,8 @@
   "dependencies": {
     "@azure/ai-form-recognizer": "^5.0.0",
     "@azure/functions": "^4.0.0",
-    "@azure/identity": "^3.4.1"
+    "@azure/identity": "^3.4.1",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/node": "^18.x",
